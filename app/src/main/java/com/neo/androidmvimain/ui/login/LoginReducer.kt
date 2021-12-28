@@ -11,7 +11,6 @@ import com.neo.androidmvimain.redux.Reducer
 class LoginReducer: Reducer<LoginViewState, LoginAction> {
 
     override fun reduce(currentState: LoginViewState, action: LoginAction): LoginViewState {
-        Log.v("Login Reducer", "Processing action : $action")
         return when(action){
             is LoginAction.EmailChanged ->{
                 // since state is immutable, make a copy of it

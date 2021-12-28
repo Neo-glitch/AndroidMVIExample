@@ -8,10 +8,12 @@ import kotlinx.coroutines.flow.StateFlow
  * state container for a given screen
  * @param[initialState] initial state of screen when it is created
  * @param[reducer] sys for taking in current state and new action and returning the new state
+ * @param[middlewares] list of middlewares for handling any side effects for actions dispatched to this store
  */
 class Store<S: State, A: Action>(
     initialState: S,
-    private val reducer: Reducer<S, A>
+    private val reducer: Reducer<S, A>,
+    private val middlewares: List<MiddleWare<S, A>> = emptyList()
 ) {
 
     private val _state =  MutableStateFlow(initialState)
@@ -25,6 +27,11 @@ class Store<S: State, A: Action>(
         val currentState = _state.value
         // reduce method is ran my class passed to store which will be implementing the reducer
         // and state will be given by class to implementing the state interface
+
+        middlewares.forEach{middleWare ->
+            middleWare.process(action,currentState, this)
+        }
+
         val newState = reducer.reduce(currentState, action)
         _state.value = newState
     }

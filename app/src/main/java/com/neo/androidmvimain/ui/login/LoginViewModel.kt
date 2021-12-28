@@ -1,6 +1,9 @@
 package com.neo.androidmvimain.ui.login
 
 import androidx.lifecycle.ViewModel
+import com.neo.androidmvimain.LoggingMiddleWare
+import com.neo.androidmvimain.LoginNetworkingMiddleWare
+import com.neo.androidmvimain.ProdLoginService
 import com.neo.androidmvimain.redux.Store
 import kotlinx.coroutines.flow.StateFlow
 
@@ -14,7 +17,8 @@ class LoginViewModel() : ViewModel() {
 
     private val store = Store(
         initialState = LoginViewState(),  // loginViewState with default params
-        reducer = LoginReducer()
+        reducer = LoginReducer(),
+        middlewares = listOf(LoggingMiddleWare(), LoginNetworkingMiddleWare(loginRepository = ProdLoginService()))
     )
 
     val viewState: StateFlow<LoginViewState> = store.state  // state that ui reacts to, from the store
