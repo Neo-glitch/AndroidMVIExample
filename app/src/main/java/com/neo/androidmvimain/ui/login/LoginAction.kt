@@ -13,4 +13,5 @@ sealed class LoginAction: Action {
     object LoginStarted: LoginAction()
     object LoginCompleted: LoginAction()
     data class LoginFailed(val error: Throwable?): LoginAction()
+    object InValidEmailSubmitted: LoginAction()
 }

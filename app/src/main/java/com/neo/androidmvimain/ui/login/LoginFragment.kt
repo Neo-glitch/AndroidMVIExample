@@ -64,6 +64,8 @@ class LoginFragment : Fragment() {
 
         binding.progressBar.visibility = if (viewState.showProgressBar) View.VISIBLE else View.GONE
 
+        binding.emailInputLayout.error = viewState.emailError
+
     }
 
     private fun navigateToProfile() {

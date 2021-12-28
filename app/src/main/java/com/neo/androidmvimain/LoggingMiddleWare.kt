@@ -14,7 +14,7 @@ import com.neo.androidmvimain.ui.login.LoginViewState
  */
 class LoggingMiddleWare<S: State, A: Action>: MiddleWare<S, A> {
 
-    override fun process(action: A, currentState: S, store: Store<S, A>) {
+    override suspend fun process(action: A, currentState: S, store: Store<S, A>) {
         Log.v("LoggingMiddleWare", "Processing action: $action, currentState: $currentState")
     }
 }

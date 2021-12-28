@@ -17,7 +17,7 @@ interface MiddleWare <S: State, A: Action>{
      *
      * @param[store] only called when a new action is needed else leave it don't call it
      */
-    fun process(action: A,
+    suspend fun process(action: A,
                  currentState: S,
                  store: Store<S, A>)
 }

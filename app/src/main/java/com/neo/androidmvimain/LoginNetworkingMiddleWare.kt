@@ -15,7 +15,7 @@ class LoginNetworkingMiddleWare(
     private val loginRepository: LoginRepository
 ): MiddleWare<LoginViewState, LoginAction> {
 
-    override fun process(
+    override suspend fun process(
         action: LoginAction,
         currentState: LoginViewState,
         store: Store<LoginViewState, LoginAction>
@@ -23,21 +23,34 @@ class LoginNetworkingMiddleWare(
         when(action){
             // called only when action is still signInButtonClicked, so safe from infinite looping
             is LoginAction.SignInButtonClicked -> {
-                store.dispatch(LoginAction.LoginStarted)
+                if(currentState.email.isEmpty()){
+                    store.dispatch(LoginAction.InValidEmailSubmitted)
+                    return
+                }
 
-                val successful = loginRepository.login(
-                    // gets email and password from the currentState
-                    email = currentState.email,
-                    password = currentState.password
-                )
-
-                // since the action must be changed we change the action to be passed to the reducer
-                // which acts on this on updates the state
-                if(successful)
-                    store.dispatch(LoginAction.LoginCompleted)
-                else
-                    store.dispatch(LoginAction.LoginFailed(null))
+                loginUser(store, currentState)
             }
         }
+    }
+
+    private suspend fun loginUser(
+        store: Store<LoginViewState, LoginAction>,
+        currentState: LoginViewState
+    ) {
+        store.dispatch(LoginAction.LoginStarted)
+
+        // n.b: could have just init the coroutine scope here for work
+        val successful = loginRepository.login(
+            // gets email and password from the currentState
+            email = currentState.email,
+            password = currentState.password
+        )
+
+        // since the action must be changed we change the action to be passed to the reducer
+        // which acts on this on updates the state
+        if (successful)
+            store.dispatch(LoginAction.LoginCompleted)
+        else
+            store.dispatch(LoginAction.LoginFailed(null))
     }
 }
